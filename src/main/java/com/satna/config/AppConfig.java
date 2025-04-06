@@ -1,6 +1,5 @@
 package com.satna.config;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -48,7 +47,7 @@ public class AppConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration cfg = new CorsConfiguration();
-                cfg.setAllowedOrigins(Arrays.asList("https://codykart.vercel.app",
+                cfg.setAllowedOrigins(Arrays.asList("https://glory-inky.vercel.app",
                         "http://localhost:3000"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
