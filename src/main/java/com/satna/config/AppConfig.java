@@ -15,22 +15,27 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
 public class AppConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests(auth -> auth
-                    // ✅ VERY IMPORTANT FOR CORS
+                    // ✅ Allow preflight requests
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                    // Secure API routes
                     .requestMatchers("/api/**").authenticated()
+
+                    // Public routes
                     .requestMatchers("/api/products/*/reviews").permitAll()
                     .anyRequest().permitAll()
             )
@@ -44,31 +49,36 @@ public class AppConfig {
         return http.build();
     }
 
-    // ✅ Proper CORS Bean
+    // ✅ Proper CORS configuration for production
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration cfg = new CorsConfiguration();
+        CorsConfiguration configuration = new CorsConfiguration();
 
-        cfg.setAllowedOrigins(Arrays.asList(
+        configuration.setAllowedOrigins(Arrays.asList(
                 "https://glory-xi.vercel.app",
                 "https://glory-shop.vercel.app"
         ));
 
-        cfg.setAllowedMethods(Arrays.asList(
+        configuration.setAllowedMethods(Arrays.asList(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS"
         ));
 
-        cfg.setAllowedHeaders(Arrays.asList("*"));
-        cfg.setAllowCredentials(true);
-        cfg.setExposedHeaders(Arrays.asList("Authorization"));
-        cfg.setMaxAge(3600L);
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+        configuration.setMaxAge(3600L);
 
-        return request -> cfg;
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 
     @Bean
-    PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
