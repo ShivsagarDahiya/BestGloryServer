@@ -29,4 +29,5 @@ ENV PORT=8080
 EXPOSE 8080
 
 # Important: bind to 0.0.0.0 for Render
-ENTRYPOINT ["java","-Dserver.port=${PORT}","-Dserver.address=0.0.0.0","-jar","app.jar"]
+ENTRYPOINT ["sh", "-c", "java -Dserver.port=$PORT -Dserver.address=0.0.0.0 -jar app.jar"]
+
