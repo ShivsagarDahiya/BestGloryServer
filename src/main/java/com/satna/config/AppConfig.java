@@ -47,7 +47,7 @@ public class AppConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration cfg = new CorsConfiguration();
-                cfg.setAllowedOrigins(Arrays.asList("https://indian-glory-in.vercel.app/",
+                cfg.setAllowedOrigins(Arrays.asList("https://glory-xi.vercel.app",
                         "https://glory-shop.vercel.app/"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
